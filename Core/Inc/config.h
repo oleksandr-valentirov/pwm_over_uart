@@ -9,5 +9,6 @@
 #define CH_MIN_VAL          1000
 #define CH_MAX_VAL          2000
 #define CH_NEUTRAL_VAL      1500
+#define CH_MAX_MIN_DIF      500
 
 #define PPM_SCALE_FACTOR    10

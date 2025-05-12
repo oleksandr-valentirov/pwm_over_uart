@@ -114,7 +114,7 @@ static uint16_t calc_checksum(uint8_t *pwm_data_ptr) {
 }
 
 static uint16_t normalize_ppm(uint16_t ppm) {
-  return ARR_VAL * (ppm - CH_MIN_VAL) / CH_MIN_VAL;
+  return (uint16_t)(ARR_VAL * abs((ppm - CH_NEUTRAL_VAL) * 100 / CH_MAX_MIN_DIF) / 100);
 }
 /* USER CODE END 0 */
 
@@ -521,10 +521,12 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE BEGIN TIM4_Init 1 */
 #ifdef _DEBUG_
+#ifndef PPM_OVER_UART
   LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_7, (uint32_t)(test_data));
   LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_7, (uint32_t)&TIM4->ARR);
   LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_7, sizeof(test_data) / sizeof(test_data[0]));
   LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_7);
+#endif
 #endif
   /* USER CODE END TIM4_Init 1 */
   TIM_InitStruct.Prescaler = 71;
@@ -719,14 +721,14 @@ static void MX_GPIO_Init(void)
   /**/
   GPIO_InitStruct.Pin = M4_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   LL_GPIO_Init(M4_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = M3_Pin|M2_Pin|M1_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
